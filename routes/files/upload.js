@@ -4,11 +4,13 @@ const File = require('../../models/file');
 const upload = require('../../services/upload');
 const status = require('../../constants/status');
 const requireAuth = require('../../middlewares/require-auth');
+const currentUser = require('../../middlewares/current-user');
 
 const uploadRouter = Router();
 
 uploadRouter.post(
   '/api/files/upload',
+  currentUser,
   requireAuth,
   upload.single('file'),
   async (req, res) => {

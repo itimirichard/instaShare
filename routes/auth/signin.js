@@ -28,6 +28,7 @@ signinRouter.post(
       );
 
       // Generate JWT and store it on the session object
+      console.log('JWT: ', process.env.JWT_KEY);
       const userJWT = jwt.sign(
         {
           id: existingUser.id,
