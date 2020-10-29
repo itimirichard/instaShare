@@ -17,7 +17,6 @@ const Signup = () => {
       password,
     },
     onSuccess: (data) => {
-      debugger;
       saveToken(data.token);
       history.push('/upload');
     },

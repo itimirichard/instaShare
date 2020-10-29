@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Message = ({ msg }) => {
+const Message = ({ msg, type }) => {
   return (
     <div
-      className='alert alert-danger alert-dismissible fade show'
+      className={`alert alert-${type} alert-dismissible fade show`}
       role='alert'
     >
       {msg}
@@ -22,6 +22,7 @@ const Message = ({ msg }) => {
 
 Message.propTypes = {
   msg: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
 };
 
 export default Message;

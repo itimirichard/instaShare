@@ -14,16 +14,17 @@ uploadRouter.post(
   requireAuth,
   upload.single('file'),
   async (req, res) => {
-    console.log(req);
     try {
-      const { name } = req.body;
-      const { path, mimetype } = req.file;
+      const { path, mimetype, originalname, size } = req.file;
       const file = new File({
-        name,
+        userId: req.currentUser.id,
+        name: originalname,
         status: status.notProcessed,
+        size,
         file_path: path,
         file_mimetype: mimetype,
       });
+
       await file.save();
       res.send('file uploaded successfully.');
     } catch (error) {

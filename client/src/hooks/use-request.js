@@ -5,17 +5,13 @@ import Message from '../components/Message';
 const useRequest = ({ url, method, body = {}, onSuccess }) => {
   const [errors, setErrors] = useState(null);
 
-  const doRequest = async (additionalBody = {}, additionalOptions = {}) => {
+  const doRequest = async (additionalBody = {}) => {
     try {
       setErrors(null);
-      const response = await axios[method](
-        url,
-        {
-          ...body,
-          ...additionalBody,
-        },
-        { ...additionalOptions }
-      );
+      const response = await axios[method](url, {
+        ...body,
+        ...additionalBody,
+      });
 
       if (onSuccess) {
         onSuccess(response.data);
@@ -23,13 +19,12 @@ const useRequest = ({ url, method, body = {}, onSuccess }) => {
 
       return response.data;
     } catch (err) {
-      debugger;
       setErrors(
         <div>
           {err.response &&
             err.response.data.errors.map((err) => (
               <p key={err.msg}>
-                <Message msg={err.msg} />
+                <Message msg={err.msg} type='danger' />
               </p>
             ))}
         </div>

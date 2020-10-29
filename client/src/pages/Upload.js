@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import Message from '../components/Message';
 import Progress from '../components/Progress';
-import useRequest from '../hooks/use-request';
+import axios from 'axios';
 
 const Upload = () => {
   const [file, setFile] = useState('');
@@ -9,15 +9,6 @@ const Upload = () => {
   const [uploadedFile, setUploadedFile] = useState({});
   const [message, setMessage] = useState('');
   const [uploadPercentage, setUploadPercentage] = useState(0);
-  const { doRequest, errors } = useRequest({
-    url: '/api/files/upload',
-    method: 'post',
-    onSuccess: (data) => {
-      const { fileName, filePath } = data;
-      setUploadedFile({ fileName, filePath });
-      setMessage('File Successfully Uploaded');
-    },
-  });
 
   const onChange = (e) => {
     setFile(e.target.files[0]);
@@ -28,28 +19,45 @@ const Upload = () => {
     e.preventDefault();
     const formData = new FormData();
     formData.append('file', file);
+    try {
+      const res = await axios.post('/api/files/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        onUploadProgress: (progressEvent) => {
+          setUploadPercentage(
+            parseInt(
+              Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            )
+          );
 
-    await doRequest(formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      onUploadProgress: (progressEvent) => {
-        setUploadPercentage(
-          parseInt(
-            Math.round((progressEvent.loaded * 100) / progressEvent.total)
-          )
-        );
+          // Clear percentage
+          setTimeout(() => setUploadPercentage(0), 10000);
+        },
+      });
 
-        // Clear percentage
-        setTimeout(() => setUploadPercentage(0), 5000);
-      },
-    });
+      const { fileName, filePath } = res.data;
+
+      setUploadedFile({ fileName, filePath });
+
+      setMessage('File Uploaded');
+    } catch (err) {
+      return setMessage(
+        <div>
+          {err.response &&
+            err.response.data.errors.map((err) => (
+              <p key={err.msg}>
+                <Message msg={err.msg} type='danger' />
+              </p>
+            ))}
+        </div>
+      );
+    }
   };
 
   return (
     <Fragment>
-      {message ? <Message msg={message} /> : null}
-      {errors}
+      {message ? <Message msg={message} type='success' /> : null}
       <form onSubmit={onSubmit} className='mt-4'>
         <div className='custom-file mb-4'>
           <input
