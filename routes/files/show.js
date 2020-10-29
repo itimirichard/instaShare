@@ -20,7 +20,7 @@ showFilesRouter.get(
       res.status(400).send({
         errors: [
           {
-            message:
+            msg:
               'Encountered and error while getting list of files. Please try again later.',
           },
         ],

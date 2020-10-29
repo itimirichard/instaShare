@@ -30,7 +30,7 @@ uploadRouter.post(
       res.status(400).send({
         errors: [
           {
-            message:
+            msg:
               'Encountered and error while uploading file. Please try again later.',
           },
         ],

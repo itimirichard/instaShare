@@ -38,10 +38,12 @@ signinRouter.post(
       );
       req.session.jwt = userJWT;
 
-      res.status(200).send(existingUser);
+      res
+        .status(200)
+        .send({ email: existingUser.email, token: req.session.jwt });
     } catch (error) {
       console.error(error);
-      res.status(400).send({ errors: [{ message: 'Invalid Credentials' }] });
+      res.status(400).send({ errors: [{ msg: 'Invalid Credentials' }] });
     }
   }
 );

@@ -17,10 +17,10 @@ signupRouter.post(
   ],
   validateRequest,
   async (req, res) => {
-    console.log('Im getting here');
+    console.log(req.body);
     try {
       const { email, password } = req.body;
-
+      console.log(email);
       const existingUser = await User.findOne({ email });
 
       if (existingUser) {
@@ -43,10 +43,10 @@ signupRouter.post(
         jwt: userJWT,
       };
 
-      res.status(201).send(user);
+      res.status(201).send({ email: user.email, token: req.session.jwt });
     } catch (error) {
       console.error(error);
-      res.status(400).send({ errors: [{ message: 'Email already in use' }] });
+      res.status(400).send({ errors: [{ msg: 'Email already in use' }] });
     }
   }
 );

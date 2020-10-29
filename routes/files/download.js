@@ -21,7 +21,7 @@ downloadRouter.get(
       res.status(400).send({
         errors: [
           {
-            message:
+            msg:
               'Encountered an error while downloading file. Please try again later.',
           },
         ],
