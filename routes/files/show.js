@@ -11,7 +11,9 @@ showFilesRouter.get(
   requireAuth,
   async (req, res) => {
     try {
-      const files = await File.find({});
+      const files = await File.find({
+        userId: req.currentUser.id,
+      });
       const filesByCreationDate = files.sort(
         (a, b) => b.createdAt - a.createdAt
       );

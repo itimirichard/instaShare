@@ -12,6 +12,7 @@ const showFilesRouter = require('./routes/files/show');
 const uploadRouter = require('./routes/files/upload');
 
 const errorHandler = require('./middlewares/error-handler');
+const compressFiles = require('./jobs/compressFiles');
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
@@ -46,6 +47,8 @@ app.all('*', async () => {
 });
 
 app.use(errorHandler);
+
+compressFiles.start();
 
 app.listen(5000, () => {
   console.log('Listening on port 5000!!!!');
