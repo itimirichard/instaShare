@@ -13,6 +13,8 @@ showFilesRouter.get(
     try {
       const files = await File.find({
         userId: req.currentUser.id,
+      }).cache({
+        time: 20,
       });
       const filesByCreationDate = files.sort(
         (a, b) => b.createdAt - a.createdAt

@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const { Router } = require('express');
 const File = require('../../models/file');
 const requireAuth = require('../../middlewares/require-auth');
@@ -12,11 +13,19 @@ downloadRouter.get(
   requireAuth,
   async (req, res) => {
     try {
-      const file = await File.findById(req.params.id);
+      console.log('Im getting here');
+      const file = await File.findById(req.params.id).cache({
+        time: 10,
+      });
       res.set({
         'Content-Type': file.file_mimetype,
       });
-      res.sendFile(path.join(__dirname, '..', file.file_path));
+
+      // const stat = fs.statSync(path.join(__dirname, '..', file.file_path));
+
+      console.log('STAT: ', path.join(__dirname, '..', file.file_path));
+      console.log('Im getting here 2');
+      res.download(path.join(__dirname, '..', file.file_path));
     } catch (error) {
       res.status(400).send({
         errors: [

@@ -5,7 +5,7 @@ const zlib = require('zlib');
 const File = require('../models/file');
 const status = require('../constants/status');
 
-const compressFiles = cron.schedule('*/10 * * * * *', async function () {
+const compressFiles = cron.schedule('*/40 * * * * *', async function () {
   const files = await File.find({ status: status.notProcessed });
   if (files.length === 0) {
     console.log('There are no files to compress');
@@ -47,7 +47,7 @@ const compressFiles = cron.schedule('*/10 * * * * *', async function () {
 
               currentFile = res;
               currentFile.set({
-                file_path: `${file.file_path}.gz`,
+                file_path: file.file_path,
                 size: stat.size,
                 status: status.processed,
               });
@@ -60,7 +60,7 @@ const compressFiles = cron.schedule('*/10 * * * * *', async function () {
     })
   )
     .then(() => {
-      console.log('FILES: ');
+      console.log('Compression Complete');
     })
     .catch((err) => console.error(err));
 });

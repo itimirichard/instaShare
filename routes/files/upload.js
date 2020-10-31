@@ -3,6 +3,7 @@ const { Router } = require('express');
 const File = require('../../models/file');
 const upload = require('../../services/upload');
 const status = require('../../constants/status');
+const { clearKey } = require('../../services/cache');
 const requireAuth = require('../../middlewares/require-auth');
 const currentUser = require('../../middlewares/current-user');
 
@@ -26,6 +27,7 @@ uploadRouter.post(
       });
 
       await file.save();
+      clearKey(File.collection.collectionName);
       res.send('file uploaded successfully.');
     } catch (error) {
       res.status(400).send({

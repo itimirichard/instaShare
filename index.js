@@ -1,7 +1,9 @@
 const express = require('express');
-require('express-async-errors');
 const { json } = require('body-parser');
 const cookieSession = require('cookie-session');
+require('express-async-errors');
+require('./services/cache');
+
 // Routes
 const currentUserRouter = require('./routes/auth/current-user');
 const signinRouter = require('./routes/auth/signin');
@@ -14,12 +16,6 @@ const uploadRouter = require('./routes/files/upload');
 const errorHandler = require('./middlewares/error-handler');
 const compressFiles = require('./jobs/compressFiles');
 
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
-}
-
-require('./database');
-
 const app = express();
 app.set('trust proxy', true);
 app.use(json());
@@ -29,6 +25,8 @@ app.use(
     secure: false,
   })
 );
+
+require('./database');
 
 app.get('/', (req, res) => {
   res.status(200).send(`Welcome to login , sign-up api`);
@@ -50,6 +48,7 @@ app.use(errorHandler);
 
 compressFiles.start();
 
-app.listen(5000, () => {
-  console.log('Listening on port 5000!!!!');
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}!!!!`);
 });
